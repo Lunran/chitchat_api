@@ -66,10 +66,11 @@ app.config["JSON_AS_ASCII"] = False
 def chitchat():
     if request.method == 'POST':
         contexts = request.json['contexts']
-        QUESTION = """
-        返事をする
+        QUESTION = \
+"""
+相手に返事をする
 
-        """
+"""
 
         concat = []
         for i, s in enumerate(contexts):
