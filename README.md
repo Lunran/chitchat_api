@@ -25,4 +25,4 @@
 # How to use
 
 - $ python main.py
-- $ curl -X POST -H "Content-Type: application/json" -d '{"contexts":"相手:何について話をしましょうか¥n自分:実は悩みが"}' "http://localhost:8001/chitchat"
+- $ python test.py

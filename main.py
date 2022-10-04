@@ -7,18 +7,16 @@ from flask import (
 )
 
 
-LABEL = ["相手:", "自分:"]
+LABEL = ["自分:", "相手:"]
 TARGET_LENGTH, SENTENCE_NUM = 30, 10
 
 
 tokenizer = T5Tokenizer.from_pretrained("rinna/japanese-gpt-1b")
-model = AutoModelForCausalLM.from_pretrained("rinna/japanese-gpt-1b")
-#model = AutoModelForCausalLM.from_pretrained("rinna/japanese-gpt-1b").to('cuda')
+model = AutoModelForCausalLM.from_pretrained("rinna/japanese-gpt-1b").to('cuda')
 
 
 def get_sentences(text, generate_length, num_return_sequences):
-    token_ids = tokenizer.encode(text, add_special_tokens=False, return_tensors="pt")
-    #token_ids = tokenizer.encode(text, add_special_tokens=False, return_tensors="pt").to('cuda')
+    token_ids = tokenizer.encode(text, add_special_tokens=False, return_tensors="pt").to('cuda')
 
     input_length = len(token_ids[0])
     with torch.no_grad():
@@ -33,7 +31,6 @@ def get_sentences(text, generate_length, num_return_sequences):
             pad_token_id=tokenizer.pad_token_id,
             bos_token_id=tokenizer.bos_token_id,
             eos_token_id=tokenizer.eos_token_id,
-            bad_word_ids=[[tokenizer.unk_token_id]]
         )
     sentences = tokenizer.batch_decode([tokens[input_length:] for tokens in output_ids.tolist()])
 
@@ -75,7 +72,10 @@ def chitchat():
         concat = []
         for i, s in enumerate(contexts):
             concat.append(LABEL[i%2] + s)
-        concat.append(LABEL[1])
+        if len(contexts)%2 == 0:
+            concat.append(LABEL[0])
+        else:
+            pass
         input = QUESTION + "\n".join(concat)
         sentences = get_sentences(input, TARGET_LENGTH, SENTENCE_NUM)
         output = choose_sentence(sentences)
